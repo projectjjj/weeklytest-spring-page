@@ -48,8 +48,13 @@
         }
     </style>
     <script>
+        let size = 5;
         $(document).ready(function () {
-            getArticles();
+            getArticles(size);
+            $("#size").change(function () {
+                size = $(this).val();
+                getArticles(size);
+            })
             check();
         });
 
@@ -91,13 +96,13 @@
             let tag = $("#searchTag").val();
             $.ajax({
                 type: "GET",
-                url: `/articles?searchTag=${tag}`,
+                url: `/articles?searchTag=${tag}&page=0&size=${size}`,
                 contentType: 'application/json; charset=utf-8',
                 success: function (response) {
                     $("#list-post").empty();
-                    for (let i = 0; i < response.length; i++) {
-                        num = response.length - i;
-                        makeListPost(response[i], num);
+                    for (let i = 0; i < size; i++) {
+                        num = response['totalElements'] - i;
+                        makeListPost(response['content'][i], num);
                     }
                 }
             })
@@ -216,6 +221,11 @@
             <button type="button" class="btn btn-primary" onclick="postingArticle()">기사저장</button>
         </div>
     </div>
+    <select style="width: 100px; margin: 5px 0; float: right" id="size">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+    </select>
     <table class="table">
         <thead>
         <tr>
@@ -237,6 +247,7 @@
         </div>
     </div>
 </div>
+
 <!-- Login Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -266,6 +277,7 @@
         </div>
     </div>
 </div>
+
 
 <!-- Join Modal -->
 <div class="modal fade" id="joinModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

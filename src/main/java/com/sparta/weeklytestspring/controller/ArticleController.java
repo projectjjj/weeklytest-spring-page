@@ -10,6 +10,8 @@ import com.sparta.weeklytestspring.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,9 +34,10 @@ public class ArticleController {
     }
 
     @GetMapping("/articles")
-    public List<GetArticlesDto.Response> getArticles(@RequestParam(required = false) String searchTag){
+    public List<GetArticlesDto.Response> getArticles(@RequestParam(required = false) String searchTag,@RequestParam Integer page, @RequestParam Integer size){
         List<Article> articles = articleService.getArticles(searchTag);
         List<GetArticlesDto.Response> response = modelMapper.map(articles, new TypeToken<List<GetArticlesDto.Response>>() {}.getType());
+        //어...
         return response;
     }
 
@@ -50,4 +53,14 @@ public class ArticleController {
     public void setArticleComment(@RequestBody ArticleCommentRequestDto articleCommentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         articleService.setArticleComment(articleCommentRequestDto);
     }
+
+//    @GetMapping("/api/article")
+//    public Page<Article> getProducts(
+//            @RequestParam("page") int page,
+//            @RequestParam("size") int size,
+//            @RequestParam("sortBy") String sortBy
+//    ) {
+//        page = page - 1;
+//        return articleService.getProducts(page , size, sortBy);
+//    }
 }
